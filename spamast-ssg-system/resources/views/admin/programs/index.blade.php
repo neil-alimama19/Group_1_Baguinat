@@ -1,0 +1,59 @@
+@extends('layouts.app')
+
+@section('title', 'Manage Programs')
+
+@section('content')
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="font-size: 28px; color: #c084fc;">Programs</h1>
+        <a href="{{ route('admin.programs.create') }}" style="background: #7c3aed; color: white; padding: 10px 20px; border-radius: 8px; text-decoration: none; font-weight: bold;">Add Program</a>
+    </div>
+
+    @if(session('error'))
+        <div style="background: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px;">{{ session('error') }}</div>
+    @endif
+
+    <div class="card">
+        <form method="GET" action="{{ route('admin.programs.index') }}" style="display: flex; gap: 15px; margin-bottom: 20px;">
+            <input type="text" name="search" placeholder="Search by name or code..." value="{{ $search }}" style="padding: 10px; border-radius: 8px; border: none; flex: 1;">
+            <button type="submit" style="background: #7c3aed; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">Search</button>
+            @if($search)
+                <a href="{{ route('admin.programs.index') }}" style="padding: 10px 20px; color: #d8b4fe; text-decoration: none;">Clear</a>
+            @endif
+        </form>
+
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="border-bottom: 1px solid rgba(255,255,255,0.2);">
+                    <th style="padding: 12px;">Code</th>
+                    <th style="padding: 12px;">Name</th>
+                    <th style="padding: 12px;">Institute</th>
+                    <th style="padding: 12px; text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @forelse($programs as $program)
+                    <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
+                        <td style="padding: 12px;">{{ $program->code }}</td>
+                        <td style="padding: 12px;">{{ $program->name }}</td>
+                        <td style="padding: 12px;">{{ $program->institute_code }}</td>
+                        <td style="padding: 12px; text-align: right;">
+                            <a href="{{ route('admin.programs.edit', $program->id) }}" style="color: #fbbf24; text-decoration: none; margin-right: 10px;">Edit</a>
+                            <form method="POST" action="{{ route('admin.programs.destroy', $program->id) }}" style="display: inline;" onsubmit="return confirm('Delete this program?');">
+                                @csrf @method('DELETE')
+                                <button type="submit" style="background: transparent; border: none; color: #ef4444; cursor: pointer;">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                @empty
+                    <tr>
+                        <td colspan="4" style="padding: 20px; text-align: center;">No programs found.</td>
+                    </tr>
+                @endforelse
+            </tbody>
+        </table>
+
+        <div style="margin-top: 20px;">
+            {{ $programs->links() }}
+        </div>
+    </div>
+@endsection

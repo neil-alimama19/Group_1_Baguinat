@@ -3,21 +3,33 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Attendance extends Model
 {
+    protected $table = 'attendances';
+
     protected $fillable = [
+        'event_session_id',
         'student_id',
-        'event_id',
-        'status',
-        'time_in',
-        'time_out',
-        'remarks',
+        'check_in_at',
+        'check_out_at',
     ];
 
-    public function student(): BelongsTo
+    protected function casts(): array
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return [
+            'check_in_at' => 'datetime',
+            'check_out_at' => 'datetime',
+        ];
+    }
+
+    public function session()
+    {
+        return $this->belongsTo(EventSession::class, 'event_session_id');
+    }
+
+    public function student()
+    {
+        return $this->belongsTo(Student::class);
     }
 }

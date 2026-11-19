@@ -6,24 +6,25 @@ use Illuminate\Database\Eloquent\Model;
 
 class Student extends Model
 {
-    protected $fillable = [
-        'student_id',
-        'name',
-        'email',
-        'password',
-        'course',
-        'year_level',
-        'contact_number',
-    ];
+    protected $fillable = ['user_id', 'program_id', 'student_no', 'sex', 'year_level'];
 
-    protected $hidden = [
-        'password',
-    ];
-
-    protected function casts(): array
+    public function user()
     {
-        return [
-            'password' => 'hashed',
-        ];
+        return $this->belongsTo(User::class);
+    }
+
+    public function program()
+    {
+        return $this->belongsTo(Program::class);
+    }
+
+    public function attendances()
+    {
+        return $this->hasMany(Attendance::class);
+    }
+
+    public function penalties()
+    {
+        return $this->hasMany(Penalty::class);
     }
 }

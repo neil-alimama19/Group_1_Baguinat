@@ -2,43 +2,40 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Student;
+use App\Models\User;
+use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
 {
-    // Show the registration form
     public function index()
     {
         return view('register');
     }
 
-    // Handle form submission and save student
     public function store(Request $request)
     {
-        // Validate the inputs
         $validated = $request->validate([
-            'student_id'     => 'required|string|max:50|unique:students,student_id',
             'name'           => 'required|string|max:255',
-            'email'          => 'required|email|max:255|unique:students,email',
+            'email'          => 'required|email:rfc|max:255|unique:users,email', // Changed to email:rfc and users table
             'password'       => 'required|string|min:8|confirmed',
-            'course'         => 'nullable|string|max:100',
-            'year_level'     => 'nullable|string|max:50',
-            'contact_number' => 'nullable|string|max:20',
         ]);
 
-        // Save the student to the database
-        Student::create([
-            'student_id'     => $validated['student_id'],
+        // Find or create the Student role
+        $studentRole = Role::firstOrCreate(['name' => 'Student']);
+
+        User::create([
             'name'           => $validated['name'],
+            'first_name'     => explode(' ', $validated['name'])[0], // Basic split
+            'last_name'      => count(explode(' ', $validated['name'])) > 1 ? explode(' ', $validated['name'])[1] : '',
             'email'          => $validated['email'],
-            'password'       => $validated['password'],
-            'course'         => $validated['course'] ?? null,
-            'year_level'     => $validated['year_level'] ?? null,
-            'contact_number' => $validated['contact_number'] ?? null,
+            'password'       => Hash::make($validated['password']),
+            'role_id'        => $studentRole->id,
+            'is_active'      => false, // Requires Admin approval
+            'is_admin'       => false,
         ]);
 
-        // Redirect to login page with success message
-        return redirect()->route('login')->with('success', 'Registration successful! Please login.');
+        return redirect()->route('login')->with('success', 'Registration successful! Your account is awaiting Admin approval.');
     }
 }
