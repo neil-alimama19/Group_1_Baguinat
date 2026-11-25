@@ -3,7 +3,7 @@
 @section('title', 'Edit User')
 
 @section('content')
-    <h1 style="font-size: 28px; color: #c084fc; margin-bottom: 20px;">Edit User: {{ $user->name }}</h1>
+    <h1 style="font-size: 28px; color: #c084fc; margin-bottom: 20px;">Edit User: {{ $user->full_name }}</h1>
 
     <div class="card" style="max-width: 600px;">
         @if ($errors->any())

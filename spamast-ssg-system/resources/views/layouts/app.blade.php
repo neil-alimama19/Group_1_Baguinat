@@ -185,7 +185,8 @@
                 </div>
                 <div class="user-details">
                     <h4>
-                        {{ auth()->user()->first_name ? auth()->user()->first_name . ' ' . auth()->user()->last_name : auth()->user()->name }}
+                        {{-- full_name comes from the User accessor (First Middle Last, no extra spaces) --}}
+                        {{ auth()->user()->full_name }}
                     </h4>
                     <span>{{ auth()->user()->role?->name }} Dashboard</span>
                 </div>

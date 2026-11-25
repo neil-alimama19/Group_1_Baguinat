@@ -55,7 +55,8 @@
                         <td style="padding: 12px;">{{ $event->venue }}</td>
                         <td style="padding: 12px;">
                             <span style="padding: 4px 8px; border-radius: 4px; background: rgba(255,255,255,0.1);">
-                                {{ ucfirst(str_replace('_', ' ', $event->day_type)) }}
+                                {{-- Str::headline turns half_day into "Half Day" (the saved value is not changed) --}}
+                                {{ Str::headline($event->day_type) }}
                             </span>
                         </td>
                         <td style="padding: 12px; text-align: right;">

@@ -68,7 +68,7 @@
                 @forelse($penalties as $penalty)
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                         <td style="padding: 12px;">{{ $penalty->student->student_no }}</td>
-                        <td style="padding: 12px;">{{ $penalty->student->user->first_name }} {{ $penalty->student->user->last_name }}</td>
+                        <td style="padding: 12px;">{{ $penalty->student->user->full_name }}</td>
                         <td style="padding: 12px;">{{ $penalty->student->program->code }}</td>
                         <td style="padding: 12px; font-weight: bold; color: #ef4444;">{{ $penalty->missed_scans }}</td>
                         <td style="padding: 12px;">₱{{ number_format($penalty->amount, 2) }}</td>
@@ -77,7 +77,7 @@
                             <span style="padding: 4px 8px; border-radius: 4px; font-size: 12px;
                                 background: {{ $penalty->status === 'unpaid' ? '#ef4444' : ($penalty->status === 'paid' ? '#4ade80' : '#fbbf24') }};
                                 color: {{ $penalty->status === 'unpaid' ? 'white' : 'black' }};">
-                                {{ ucfirst($penalty->status) }}
+                                {{ Str::headline($penalty->status) }}
                             </span>
                         </td>
                         @can('manage-ssg')

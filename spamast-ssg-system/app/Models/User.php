@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Str; // text helper used by full_name
 
 #[Fillable(['name', 'email', 'password', 'first_name', 'middle_name', 'last_name', 'role_id', 'is_active', 'is_admin', 'photo'])]
 #[Hidden(['password', 'remember_token'])]
@@ -35,6 +36,18 @@ class User extends Authenticatable
             'Adviser' => 'adviser.dashboard',
             default => 'student.dashboard',
         };
+    }
+
+    // Display-only full name: "First Middle Last". The database columns are not changed.
+    // Str::squish() removes extra spaces, so a blank middle name leaves no double space.
+    public function getFullNameAttribute(): string
+    {
+        // Older rows may only have the "name" column, so fall back to it
+        if (blank($this->first_name)) {
+            return Str::squish((string) $this->name);
+        }
+
+        return Str::squish($this->first_name . ' ' . $this->middle_name . ' ' . $this->last_name);
     }
 
     public function role()

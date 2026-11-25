@@ -10,7 +10,7 @@
 
     <div class="card" style="max-width: 800px;">
         <p style="color: #94a3b8; font-size: 13px; margin-bottom: 15px;">
-            Posted by {{ $announcement->user->first_name ? $announcement->user->first_name . ' ' . $announcement->user->last_name : $announcement->user->name }}
+            Posted by {{ $announcement->user->full_name }}
             on {{ $announcement->created_at->format('F d, Y h:i A') }}
         </p>
 

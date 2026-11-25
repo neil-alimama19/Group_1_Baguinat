@@ -46,7 +46,7 @@
                 @forelse($students as $student)
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                         <td style="padding: 12px;">{{ $student->student_no }}</td>
-                        <td style="padding: 12px;">{{ $student->user->first_name ?? $student->user->name }} {{ $student->user->last_name }}</td>
+                        <td style="padding: 12px;">{{ $student->user->full_name }}</td>
                         <td style="padding: 12px;">{{ $student->program->code ?? 'N/A' }} ({{ $student->program->institute->code ?? 'N/A' }})</td>
                         <td style="padding: 12px;">{{ $student->year_level }}</td>
                         <td style="padding: 12px; text-align: right;">

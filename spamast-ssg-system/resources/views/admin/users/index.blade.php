@@ -35,7 +35,7 @@
             <tbody>
                 @forelse($users as $user)
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <td style="padding: 12px;">{{ $user->name }}</td>
+                        <td style="padding: 12px;">{{ $user->full_name }}</td>
                         <td style="padding: 12px;">{{ $user->email }}</td>
                         <td style="padding: 12px;">{{ $user->role?->name ?? 'N/A' }}</td>
                         <td style="padding: 12px;">

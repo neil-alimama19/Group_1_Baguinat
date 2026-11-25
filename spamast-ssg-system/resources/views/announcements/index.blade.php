@@ -18,9 +18,12 @@
                 <a href="{{ route('announcements.show', $announcement) }}" style="color: #e9d5ff; text-decoration: none;">{{ $announcement->title }}</a>
             </h2>
             <p style="color: #94a3b8; font-size: 13px; margin-bottom: 12px;">
-                Posted by {{ $announcement->user->first_name ? $announcement->user->first_name . ' ' . $announcement->user->last_name : $announcement->user->name }}
+                Posted by {{ $announcement->user->full_name }}
                 on {{ $announcement->created_at->format('F d, Y h:i A') }}
             </p>
+
+            {{-- Str::limit cuts the body at 120 characters and adds "..." (the saved text is not changed) --}}
+            <p style="margin-bottom: 12px; line-height: 1.5;">{{ Str::limit($announcement->body, 120) }}</p>
 
             <div style="display: flex; gap: 15px; align-items: center; flex-wrap: wrap;">
                 <a href="{{ route('announcements.show', $announcement) }}" style="color: #d8b4fe; font-weight: bold; text-decoration: none;">Read more</a>

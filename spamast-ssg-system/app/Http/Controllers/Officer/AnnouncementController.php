@@ -7,6 +7,7 @@ use App\Models\Announcement;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class AnnouncementController extends Controller
 {
@@ -22,7 +23,7 @@ class AnnouncementController extends Controller
         // Store the optional file in storage/app/public/announcements and keep only its path
         $path = null;
         if ($request->hasFile('attachment')) {
-            $path = $request->file('attachment')->store('announcements', 'public');
+            $path = $this->storeAttachment($request, $validated['title']); // readable file name
         }
 
         Announcement::create([
@@ -57,7 +58,7 @@ class AnnouncementController extends Controller
                 Storage::disk('public')->delete($announcement->attachment);
             }
 
-            $data['attachment'] = $request->file('attachment')->store('announcements', 'public');
+            $data['attachment'] = $this->storeAttachment($request, $validated['title']);
         }
 
         $announcement->update($data);
@@ -77,6 +78,21 @@ class AnnouncementController extends Controller
         Cache::forget('officer.stats'); // announcement count changed
 
         return redirect()->route('announcements.index')->with('success', 'Announcement deleted successfully.');
+    }
+
+    // Saves the file as "<title-slug>-<8 random characters>.<extension>" and returns its path.
+    // Example: "Midterm Schedule" -> announcements/midterm-schedule-k3f9a2xq.pdf
+    private function storeAttachment(Request $request, string $title): string
+    {
+        $file = $request->file('attachment');
+
+        // Str::slug makes the title URL-safe; limit it so the path always fits the 255-character column
+        $slug = Str::slug(Str::limit($title, 50, '')) ?: 'announcement';
+
+        // The random part keeps two files with the same title from overwriting each other
+        $name = $slug . '-' . Str::lower(Str::random(8)) . '.' . $file->extension();
+
+        return $file->storeAs('announcements', $name, 'public');
     }
 
     private function validateAnnouncement(Request $request): array

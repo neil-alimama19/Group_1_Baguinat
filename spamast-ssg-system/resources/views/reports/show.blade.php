@@ -105,12 +105,12 @@
                 @forelse($penalties as $penalty)
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                         <td style="padding: 10px;">{{ $penalty->student->student_no }}</td>
-                        <td style="padding: 10px;">{{ $penalty->student->user->first_name }} {{ $penalty->student->user->last_name }}</td>
+                        <td style="padding: 10px;">{{ $penalty->student->user->full_name }}</td>
                         <td style="padding: 10px;">{{ $penalty->student->program->code }}</td>
                         <td style="padding: 10px; font-weight: bold;">{{ $penalty->missed_scans }}</td>
                         <td style="padding: 10px;">₱{{ number_format($penalty->amount, 2) }}</td>
                         <td style="padding: 10px;">{{ $penalty->sanction ?? '--' }}</td>
-                        <td style="padding: 10px;">{{ ucfirst($penalty->status) }}</td>
+                        <td style="padding: 10px;">{{ Str::headline($penalty->status) }}</td>
                     </tr>
                 @empty
                     <tr>

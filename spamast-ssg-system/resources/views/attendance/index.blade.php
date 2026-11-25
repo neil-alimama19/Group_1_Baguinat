@@ -19,7 +19,7 @@
             <select name="session_id" style="padding: 10px; border-radius: 8px; border: none;">
                 <option value="">All Sessions</option>
                 @foreach($sessions as $session)
-                    <option value="{{ $session->id }}" {{ request('session_id') == $session->id ? 'selected' : '' }}>{{ ucfirst($session->period) }}</option>
+                    <option value="{{ $session->id }}" {{ request('session_id') == $session->id ? 'selected' : '' }}>{{ Str::headline($session->period) }}</option>
                 @endforeach
             </select>
 
@@ -60,9 +60,9 @@
                 @forelse($attendances as $attendance)
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
                         <td style="padding: 12px;">{{ $attendance->student->student_no }}</td>
-                        <td style="padding: 12px;">{{ $attendance->student->user->first_name }} {{ $attendance->student->user->last_name }}</td>
+                        <td style="padding: 12px;">{{ $attendance->student->user->full_name }}</td>
                         <td style="padding: 12px;">{{ $attendance->student->program->code }} ({{ $attendance->student->program->institute->code }})</td>
-                        <td style="padding: 12px; text-transform: capitalize;">{{ $attendance->session->period }}</td>
+                        <td style="padding: 12px;">{{ Str::headline($attendance->session->period) }}</td>
                         <td style="padding: 12px;">{{ $attendance->check_in_at ? $attendance->check_in_at->format('h:i A') : '--' }}</td>
                         <td style="padding: 12px;">{{ $attendance->check_out_at ? $attendance->check_out_at->format('h:i A') : '--' }}</td>
                         
@@ -101,7 +101,7 @@
                         <select name="student_id" style="width: 100%; padding: 10px; border-radius: 8px; border: none;" required>
                             <option value="">Select Student</option>
                             @foreach(\App\Models\Student::with('user')->get() as $student)
-                                <option value="{{ $student->id }}">{{ $student->student_no }} - {{ $student->user->first_name }} {{ $student->user->last_name }}</option>
+                                <option value="{{ $student->id }}">{{ $student->student_no }} - {{ $student->user->full_name }}</option>
                             @endforeach
                         </select>
                     </div>
@@ -110,7 +110,7 @@
                         <select name="event_session_id" style="width: 100%; padding: 10px; border-radius: 8px; border: none;" required>
                             <option value="">Select Session</option>
                             @foreach($sessions as $session)
-                                <option value="{{ $session->id }}">{{ ucfirst($session->period) }}</option>
+                                <option value="{{ $session->id }}">{{ Str::headline($session->period) }}</option>
                             @endforeach
                         </select>
                     </div>

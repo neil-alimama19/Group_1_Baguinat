@@ -29,11 +29,11 @@
     <div class="stats-grid" style="grid-template-columns: repeat(3, 1fr);">
         <div class="stat-box">
             <h3>Day Type</h3>
-            <div class="number" style="font-size: 18px;">{{ ucfirst(str_replace('_', ' ', $event->day_type)) }}</div>
+            <div class="number" style="font-size: 18px;">{{ Str::headline($event->day_type) }}</div>
         </div>
         <div class="stat-box">
             <h3>Availability</h3>
-            <div class="number" style="font-size: 18px;">{{ ucfirst($event->availability) }}</div>
+            <div class="number" style="font-size: 18px;">{{ Str::headline($event->availability) }}</div>
         </div>
         <div class="stat-box">
             <h3>Fine Per Miss</h3>
@@ -91,7 +91,7 @@
             <tbody>
                 @foreach($event->sessions as $session)
                     <tr style="border-bottom: 1px solid rgba(255,255,255,0.1);">
-                        <td style="padding: 10px; font-weight: bold;">{{ ucfirst($session->period) }}</td>
+                        <td style="padding: 10px; font-weight: bold;">{{ Str::headline($session->period) }}</td>
                         <td style="padding: 10px;">
                             @if($session->check_in_start)
                                 {{ \Carbon\Carbon::parse($session->check_in_start)->format('h:i A') }} - {{ \Carbon\Carbon::parse($session->check_in_end)->format('h:i A') }}
