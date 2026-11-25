@@ -82,7 +82,8 @@
                         </td>
                         @can('manage-ssg')
                             <td style="padding: 12px; text-align: right; display: flex; gap: 5px; justify-content: flex-end;">
-                                <button type="button" onclick="openEditModal({{ $penalty->id }}, '{{ $penalty->amount }}', '{{ $penalty->sanction }}', '{{ $penalty->status }}')" style="background: #fbbf24; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">Edit</button>
+                                {{-- CHANGED: @js() safely escapes each value (an apostrophe in a sanction no longer breaks the button) --}}
+                                <button type="button" onclick="openEditModal({{ $penalty->id }}, @js($penalty->amount), @js($penalty->sanction), @js($penalty->status))" style="background: #fbbf24; color: black; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">Edit</button>
                                 <form method="POST" action="{{ route('officer.penalties.destroy', $penalty) }}" onsubmit="return confirm('Delete this penalty?');">
                                     @csrf @method('DELETE')
                                     <button type="submit" style="background: #ef4444; color: white; border: none; padding: 5px 10px; border-radius: 5px; cursor: pointer; font-size: 12px;">Delete</button>
@@ -135,8 +136,13 @@
         </div>
 
         <script>
+            // CHANGED: the URL comes from the named route officer.penalties.update (PUT /officer/penalties/{penalty}).
+            // ':id' is a placeholder, and 'false' keeps the URL relative (no domain), like before.
+            const penaltyUrlTemplate = @js(route('officer.penalties.update', ':id', false));
+
             function openEditModal(id, amount, sanction, status) {
-                document.getElementById('editForm').action = `/officer/penalties/${id}`;
+                // Swap the placeholder for the real penalty id
+                document.getElementById('editForm').action = penaltyUrlTemplate.replace(':id', id);
                 document.getElementById('edit_amount').value = amount;
                 document.getElementById('edit_sanction').value = sanction;
                 document.getElementById('edit_status').value = status;
