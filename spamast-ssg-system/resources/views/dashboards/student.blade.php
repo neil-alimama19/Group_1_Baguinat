@@ -21,5 +21,8 @@
         <p>View upcoming campus events, check your attendance records, and stay updated.</p>
     </div>
 
+    {{-- NEW: weather widget --}}
+    @include('partials.weather')
+
     @include('partials.latest-announcements')
 @endsection

@@ -25,5 +25,8 @@
         <p>Review event proposals, monitor officer activities, and oversee the SSG operations.</p>
     </div>
 
+    {{-- NEW: weather widget --}}
+    @include('partials.weather')
+
     @include('partials.latest-announcements')
 @endsection

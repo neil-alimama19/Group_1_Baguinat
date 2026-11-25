@@ -31,4 +31,7 @@
         <h2>Welcome, Admin!</h2>
         <p>From here you can manage all users, oversee all events, and control system settings.</p>
     </div>
+
+    {{-- NEW: weather widget --}}
+    @include('partials.weather')
 @endsection

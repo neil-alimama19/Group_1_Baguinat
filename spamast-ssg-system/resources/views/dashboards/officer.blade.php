@@ -29,5 +29,8 @@
         <p>You can manage events, track attendance, and monitor student participation here.</p>
     </div>
 
+    {{-- NEW: weather widget --}}
+    @include('partials.weather')
+
     @include('partials.latest-announcements')
 @endsection

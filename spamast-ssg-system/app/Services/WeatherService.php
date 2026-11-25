@@ -22,6 +22,23 @@ class WeatherService
     }
 
     /**
+     * Convert an Open-Meteo weather_code (WMO code) into short text.
+     */
+    public function label(?int $code): string
+    {
+        return match (true) {
+            $code === null                   => 'Unknown',
+            $code === 0                      => 'Clear',
+            in_array($code, [1, 2, 3])       => 'Partly Cloudy',   // mainly clear, partly cloudy, overcast
+            in_array($code, [45, 48])        => 'Fog',
+            $code >= 51 && $code <= 67       => 'Rain',            // drizzle and rain
+            $code >= 80 && $code <= 82       => 'Rain Showers',
+            $code >= 95 && $code <= 99       => 'Thunderstorm',
+            default                          => 'Unknown',         // any code not in your list
+        };
+    }
+
+    /**
      * Call the Open-Meteo API. Returns the "current" data, or null on any failure.
      */
     private function fetch(): ?array
