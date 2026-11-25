@@ -89,6 +89,21 @@
 
         hr { border: none; border-top: 1px solid #e2e8f0; margin: 24px 0; }
         .section-title { font-size: 16px; font-weight: bold; color: #1e1b4b; margin-bottom: 16px; }
+
+        /* Profile photo preview */
+        .photo-row { align-items: center; }
+        .photo-preview {
+            width: 64px; height: 64px;
+            border-radius: 50%;
+            object-fit: cover;          /* crop the image to fill the circle */
+            flex-shrink: 0;
+        }
+        .photo-initials {
+            background: #7c3aed; color: #fff;
+            display: flex; align-items: center; justify-content: center;
+            font-weight: bold; font-size: 22px;
+        }
+        .hint { display: block; font-size: 12px; color: #64748b; margin-top: 6px; }
     </style>
 </head>
 <body>
@@ -112,9 +127,24 @@
             </div>
         @endif
 
-        <form method="POST" action="{{ route('profile.update') }}">
+        {{-- enctype is required, otherwise the file is not sent to the server --}}
+        <form method="POST" action="{{ route('profile.update') }}" enctype="multipart/form-data">
             @csrf
             @method('PUT')
+
+            <div class="row photo-row">
+                {{-- Current photo, or initials when there is no photo --}}
+                @if ($user->photo)
+                    <img src="{{ asset('storage/' . $user->photo) }}" alt="Profile photo" class="photo-preview">
+                @else
+                    <div class="photo-preview photo-initials">{{ substr($user->first_name ?? $user->name, 0, 1) }}{{ substr($user->last_name ?? '', 0, 1) }}</div>
+                @endif
+                <div class="col">
+                    <label for="photo">Profile Photo (Optional)</label>
+                    <input type="file" id="photo" name="photo" accept="image/jpeg,image/png,image/webp">
+                    <span class="hint">JPG, JPEG, PNG or WEBP. Maximum 2 MB.</span>
+                </div>
+            </div>
 
             <div class="row">
                 <div class="col">

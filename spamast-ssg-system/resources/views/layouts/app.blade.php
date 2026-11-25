@@ -67,7 +67,9 @@
             border-radius: 50%;
             display: flex; align-items: center; justify-content: center;
             font-weight: bold; font-size: 16px;
+            overflow: hidden;                 /* keeps the photo inside the circle */
         }
+        .avatar-img { width: 100%; height: 100%; object-fit: cover; }
         .user-details h4 { font-size: 14px; margin-bottom: 2px; }
         .user-details span { font-size: 12px; color: #d8b4fe; }
         
@@ -173,7 +175,13 @@
         <header class="top-navbar">
             <div class="user-info">
                 <div class="avatar">
-                    {{ substr(auth()->user()->first_name ?? auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->last_name ?? '', 0, 1) }}
+                    @if(auth()->user()->photo)
+                        {{-- Uploaded photo (saved on the public disk, reached through the storage link) --}}
+                        <img src="{{ asset('storage/' . auth()->user()->photo) }}" alt="Profile photo" class="avatar-img">
+                    @else
+                        {{-- No photo yet: show initials --}}
+                        {{ substr(auth()->user()->first_name ?? auth()->user()->name, 0, 1) }}{{ substr(auth()->user()->last_name ?? '', 0, 1) }}
+                    @endif
                 </div>
                 <div class="user-details">
                     <h4>
