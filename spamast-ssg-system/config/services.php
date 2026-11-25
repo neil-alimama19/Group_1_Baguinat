@@ -35,4 +35,12 @@ return [
         ],
     ],
 
+    // NEW: Open-Meteo weather settings (no API key needed)
+    'weather' => [
+        'url' => 'https://api.open-meteo.com/v1/forecast',
+        // env() is allowed here (config files only); (float) makes sure we get numbers
+        'latitude' => (float) env('WEATHER_LAT', 6.41),
+        'longitude' => (float) env('WEATHER_LON', 125.61),
+    ],
+
 ];
