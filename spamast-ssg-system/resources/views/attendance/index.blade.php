@@ -11,12 +11,7 @@
         <a href="{{ route('events.show', $event) }}" style="color: #d8b4fe; text-decoration: none; font-weight: bold;">&larr; Back to Event</a>
     </div>
 
-    @if(session('error'))
-        <div style="background: #ef4444; padding: 15px; border-radius: 8px; margin-bottom: 20px;">{{ session('error') }}</div>
-    @endif
-    @if(session('success'))
-        <div style="background: #dcfce7; color: #166534; padding: 15px; border-radius: 8px; margin-bottom: 20px; font-weight: bold;">{{ session('success') }}</div>
-    @endif
+    {{-- Success/error alerts are now shown by layouts/app.blade.php --}}
 
     <div class="card">
         <form method="GET" action="{{ route('attendance.index', $event) }}" style="display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
@@ -43,7 +38,8 @@
             </select>
             
             <button type="submit" style="background: #7c3aed; color: white; border: none; padding: 10px 20px; border-radius: 8px; cursor: pointer; font-weight: bold;">Filter</button>
-            <a href="{{ route('attendance.index', $event) }}" style="padding: 10px 20px; color: #d8b4fe; text-decoration: none;">Clear</a>
+            {{-- clear=1 tells the controller to remove filters.institute_id and filters.program_id from the session --}}
+            <a href="{{ route('attendance.index', [$event, 'clear' => 1]) }}" style="padding: 10px 20px; color: #d8b4fe; text-decoration: none;">Clear Filters</a>
         </form>
 
         <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 14px;">
@@ -168,26 +164,32 @@
 
     {{-- JavaScript for Institute/Program Filter --}}
     <script>
-        document.getElementById('institute_filter').addEventListener('change', function() {
-            const instituteId = this.value;
-            const programSelect = document.getElementById('program_filter');
-            const options = programSelect.querySelectorAll('option');
+        const instituteSelect = document.getElementById('institute_filter');
+        const programSelect = document.getElementById('program_filter');
 
-            programSelect.value = ''; // Reset selection
+        // Show only the programs of the chosen institute.
+        // resetProgram = true only when the user changes the institute (not on page load).
+        function filterPrograms(resetProgram) {
+            const instituteId = instituteSelect.value;
 
-            options.forEach(option => {
-                if (!option.value) return; 
+            if (resetProgram) {
+                programSelect.value = ''; // Reset selection
+            }
+
+            programSelect.querySelectorAll('option').forEach(option => {
+                if (!option.value) return;
                 if (!instituteId || option.getAttribute('data-institute') === instituteId) {
                     option.style.display = 'block';
                 } else {
                     option.style.display = 'none';
                 }
             });
-        });
-
-        // Trigger on load in case there are old values
-        if (document.getElementById('institute_filter').value) {
-            document.getElementById('institute_filter').dispatchEvent(new Event('change'));
         }
+
+        // User picks a new institute -> reset the program
+        instituteSelect.addEventListener('change', () => filterPrograms(true));
+
+        // On page load (including restored session filters) -> keep the selected program
+        filterPrograms(false);
     </script>
 @endsection

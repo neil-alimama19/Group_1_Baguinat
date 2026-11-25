@@ -83,12 +83,26 @@
         /* Content Area */
         .content { padding: 40px; flex: 1; }
         
-        /* Flash Messages */
-        .success-alert {
-            background: #dcfce7; color: #166534;
-            padding: 15px; border-radius: 10px;
-            margin-bottom: 20px; font-weight: bold;
+        /* Flash Messages (dismissible) */
+        .alert {
+            display: flex;                    /* message on the left, X button on the right */
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            font-weight: bold;
         }
+        .alert-success { background: #dcfce7; color: #166534; }  /* same green as before */
+        .alert-error   { background: #ef4444; color: white; }    /* same red used on other pages */
+        .alert-close {
+            background: none; border: none;
+            color: inherit;                   /* X takes the alert's text color */
+            font-size: 20px; line-height: 1;
+            cursor: pointer; opacity: 0.7;
+        }
+        .alert-close:hover { opacity: 1; }
 
         /* Cards & Stats */
         .card {
@@ -180,8 +194,20 @@
 
         <!-- Content -->
         <main class="content">
+            {{-- Flash messages: session keys "success" and "error" --}}
             @if(session('success'))
-                <div class="success-alert">{{ session('success') }}</div>
+                <div class="alert alert-success" role="alert">
+                    <span>{{ session('success') }}</span>
+                    {{-- Removes this alert from the page when clicked --}}
+                    <button type="button" class="alert-close" aria-label="Close" onclick="this.parentElement.remove()">&times;</button>
+                </div>
+            @endif
+
+            @if(session('error'))
+                <div class="alert alert-error" role="alert">
+                    <span>{{ session('error') }}</span>
+                    <button type="button" class="alert-close" aria-label="Close" onclick="this.parentElement.remove()">&times;</button>
+                </div>
             @endif
 
             @yield('content')

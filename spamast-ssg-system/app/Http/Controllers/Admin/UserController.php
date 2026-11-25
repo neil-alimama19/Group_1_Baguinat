@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Validation\Rule;
@@ -63,6 +64,8 @@ class UserController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]);
 
+        Cache::forget('admin.stats'); // users per role / pending approvals changed
+
         return redirect()->route('admin.users.index')->with('success', 'User created successfully.');
     }
 
@@ -91,6 +94,8 @@ class UserController extends Controller
             'is_active' => $request->boolean('is_active'),
         ]);
 
+        Cache::forget('admin.stats'); // users per role / pending approvals changed
+
         return redirect()->route('admin.users.index')->with('success', 'User updated successfully.');
     }
 
@@ -98,7 +103,14 @@ class UserController extends Controller
     {
         Gate::authorize('delete', $user);
 
+        $userId = $user->id;
         $user->delete();
+
+        // A deleted Student also removes their attendances and penalties
+        Cache::forget('admin.stats');
+        Cache::forget('officer.stats');
+        Cache::forget('adviser.stats');
+        Cache::forget("student.stats.{$userId}");
 
         return redirect()->route('admin.users.index')->with('success', 'User deleted successfully.');
     }
@@ -108,6 +120,8 @@ class UserController extends Controller
         $user->update(['is_active' => !$user->is_active]);
 
         $status = $user->is_active ? 'activated' : 'deactivated';
+        Cache::forget('admin.stats'); // users per role / pending approvals changed
+
         return redirect()->back()->with('success', "User account {$status} successfully.");
     }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Attendance;
 use App\Models\EventSession;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class AttendanceController extends Controller
 {
@@ -37,6 +38,9 @@ class AttendanceController extends Controller
 
         // If it was just created (or somehow existed without a time), ensure the time is set
         $attendance->update(['check_in_at' => now()]);
+
+        Cache::forget('adviser.stats');                         // a new attendance row exists
+        Cache::forget("student.stats.{$request->user()->id}");  // this student's own count
 
         return back()->with('success', 'Check-in successful!');
     }

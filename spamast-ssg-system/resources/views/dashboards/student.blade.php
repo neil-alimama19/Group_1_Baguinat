@@ -7,12 +7,12 @@
     
     <div class="stats-grid">
         <div class="stat-box">
-            <h3>Events Joined</h3>
-            <div class="number">4</div>
+            <h3>Upcoming Events</h3>
+            <div class="number">{{ $stats['upcoming_events'] }}</div>
         </div>
         <div class="stat-box">
-            <h3>Attendance Streak</h3>
-            <div class="number">100%</div>
+            <h3>My Attendance Records</h3>
+            <div class="number">{{ $stats['my_attendance'] }}</div>
         </div>
     </div>
 

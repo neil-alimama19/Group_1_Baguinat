@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use App\Models\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 
 class RegisterController extends Controller
@@ -35,6 +36,8 @@ class RegisterController extends Controller
             'is_active'      => false, // Requires Admin approval
             'is_admin'       => false,
         ]);
+
+        Cache::forget('admin.stats'); // new pending account
 
         return redirect()->route('login')->with('success', 'Registration successful! Your account is awaiting Admin approval.');
     }

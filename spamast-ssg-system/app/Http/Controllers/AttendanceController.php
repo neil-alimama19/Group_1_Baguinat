@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\EventSession;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Gate;
 
 class AttendanceController extends Controller
@@ -16,6 +17,30 @@ class AttendanceController extends Controller
      */
     public function index(Request $request, Event $event)
     {
+        // 0. "Clear Filters" link sends ?clear=1: forget saved filters, then reload a clean URL
+        if ($request->boolean('clear')) {
+            session()->forget(['filters.institute_id', 'filters.program_id']);
+
+            return redirect()->route('attendance.index', $event);
+        }
+
+        // Resolve institute_id and program_id: request first, otherwise the saved session value
+        foreach (['institute_id', 'program_id'] as $key) {
+            if ($request->has($key)) {
+                // The filter form was submitted: save the choice back to the session
+                if ($request->filled($key)) {
+                    session()->put("filters.$key", $request->input($key));
+                } else {
+                    // "All Institutes" / "All Programs" was chosen: drop the saved value
+                    session()->forget("filters.$key");
+                }
+            } elseif (session()->has("filters.$key")) {
+                // Nothing in the URL: reuse the saved filter. merge() lets the queries,
+                // the dropdown "selected" checks and pagination links all see it.
+                $request->merge([$key => session("filters.$key")]);
+            }
+        }
+
         // 1. Start query with eager loading
         $query = Attendance::with(['student.user', 'student.program.institute', 'session'])
             ->whereHas('session', function ($q) use ($event) {
@@ -83,6 +108,11 @@ class AttendanceController extends Controller
 
         Attendance::create($validated);
 
+        Cache::forget('adviser.stats'); // attendance record count changed
+        // Forget the key of the student who received the record
+        $userId = Student::whereKey($validated['student_id'])->value('user_id');
+        Cache::forget("student.stats.{$userId}");
+
         return back()->with('success', 'Attendance record added successfully.');
     }
 
@@ -110,7 +140,12 @@ class AttendanceController extends Controller
     {
         Gate::authorize('manage-ssg');
 
+        $userId = $attendance->student->user_id; // save it before deleting
+
         $attendance->delete();
+
+        Cache::forget('adviser.stats');
+        Cache::forget("student.stats.{$userId}");
 
         return back()->with('success', 'Attendance record deleted successfully.');
     }

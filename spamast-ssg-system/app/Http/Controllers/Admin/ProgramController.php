@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 
@@ -50,6 +51,8 @@ class ProgramController extends Controller
             'updated_at' => now(),
         ]);
 
+        Cache::forget('admin.stats'); // institute/program count changed
+
         return redirect()->route('admin.programs.index')->with('success', 'Program created successfully.');
     }
 
@@ -94,6 +97,8 @@ class ProgramController extends Controller
         }
 
         DB::table('programs')->where('id', $id)->delete();
+
+        Cache::forget('admin.stats'); // institute/program count changed
 
         return redirect()->route('admin.programs.index')->with('success', 'Program deleted successfully.');
     }

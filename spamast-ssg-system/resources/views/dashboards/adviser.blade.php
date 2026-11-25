@@ -7,12 +7,16 @@
     
     <div class="stats-grid">
         <div class="stat-box">
-            <h3>Pending Approvals</h3>
-            <div class="number">2</div>
+            <h3>Upcoming Events</h3>
+            <div class="number">{{ $stats['upcoming_events'] }}</div>
         </div>
         <div class="stat-box">
-            <h3>System Reports</h3>
-            <div class="number">8</div>
+            <h3>Attendance Records</h3>
+            <div class="number">{{ $stats['attendance_records'] }}</div>
+        </div>
+        <div class="stat-box">
+            <h3>Unpaid Fines</h3>
+            <div class="number">{{ $stats['unpaid_fines'] }}</div>
         </div>
     </div>
 

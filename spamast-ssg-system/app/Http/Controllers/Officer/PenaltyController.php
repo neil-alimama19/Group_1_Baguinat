@@ -7,6 +7,7 @@ use App\Models\Event;
 use App\Models\Penalty;
 use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class PenaltyController extends Controller
 {
@@ -58,6 +59,8 @@ class PenaltyController extends Controller
             }
         }
 
+        $this->forgetDashboardCache(); // clear outdated dashboard numbers
+
         return redirect()->route('penalties.index', $event)->with('success', 'Penalties generated successfully.');
     }
 
@@ -71,6 +74,8 @@ class PenaltyController extends Controller
 
         $penalty->update($validated);
 
+        $this->forgetDashboardCache(); // clear outdated dashboard numbers
+
         return back()->with('success', 'Penalty updated successfully.');
     }
 
@@ -78,6 +83,15 @@ class PenaltyController extends Controller
     {
         $penalty->delete();
 
+        $this->forgetDashboardCache(); // clear outdated dashboard numbers
+
         return back()->with('success', 'Penalty deleted successfully.');
+    }
+
+    // Fines changed: the Officer and Adviser dashboards show unpaid fines
+    private function forgetDashboardCache(): void
+    {
+        Cache::forget('officer.stats');
+        Cache::forget('adviser.stats');
     }
 }

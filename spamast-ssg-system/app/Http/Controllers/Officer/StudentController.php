@@ -9,6 +9,7 @@ use App\Models\Role;
 use App\Models\Institute;
 use App\Models\Program;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -100,6 +101,9 @@ class StudentController extends Controller
             );
         });
 
+        Cache::forget('officer.stats'); // student count changed
+        Cache::forget('admin.stats');   // a new Student account was created
+
         return redirect()->route('officer.students.index')->with('success', 'Student created successfully. Initial password is their student number.');
     }
 
@@ -147,10 +151,18 @@ class StudentController extends Controller
 
     public function destroy(Student $student)
     {
+        $userId = $student->user_id; // save it first, the row is deleted below
+
         DB::transaction(function () use ($student) {
             // Delete User (this will cascade and delete the student row too due to migration)
             $student->user->delete();
         });
+
+        // The cascade also removed this student's attendances and penalties
+        Cache::forget('officer.stats');
+        Cache::forget('adviser.stats');
+        Cache::forget('admin.stats');
+        Cache::forget("student.stats.{$userId}");
 
         return redirect()->route('officer.students.index')->with('success', 'Student deleted successfully.');
     }

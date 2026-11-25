@@ -4,7 +4,9 @@ namespace App\Http\Controllers\Officer;
 
 use App\Http\Controllers\Controller;
 use App\Models\Event;
+use App\Models\Student;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
@@ -33,6 +35,8 @@ class EventController extends Controller
 
             $this->saveSessions($event, $validated);
         });
+
+        $this->forgetDashboardCache(); // clear outdated dashboard numbers
 
         return redirect()->route('events.index')->with('success', 'Event created successfully.');
     }
@@ -91,6 +95,8 @@ class EventController extends Controller
             $this->saveSessions($event, $validated);
         });
 
+        $this->forgetDashboardCache(); // clear outdated dashboard numbers
+
         return redirect()->route('events.index')->with('success', 'Event updated successfully.');
     }
 
@@ -100,7 +106,19 @@ class EventController extends Controller
 
         $event->delete();
 
+        $this->forgetDashboardCache(); // clear outdated dashboard numbers
+
         return redirect()->route('events.index')->with('success', 'Event deleted successfully.');
+    }
+
+    // Event changes affect the Officer, the Adviser and every Student dashboard
+    private function forgetDashboardCache(): void
+    {
+        Cache::forget('officer.stats');
+        Cache::forget('adviser.stats');
+
+        // Student keys are per user, so forget each student's own key
+        Student::pluck('user_id')->each(fn ($userId) => Cache::forget("student.stats.{$userId}"));
     }
 
     private function validateEvent(Request $request)
