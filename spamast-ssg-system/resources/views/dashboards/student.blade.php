@@ -20,4 +20,6 @@
         <h2>Welcome, Student!</h2>
         <p>View upcoming campus events, check your attendance records, and stay updated.</p>
     </div>
+
+    @include('partials.latest-announcements')
 @endsection

@@ -34,5 +34,11 @@
             <div class="section-title">Student Menu</div>
             <a href="{{ route('events.index') }}">Upcoming Events</a>
         @endcan
+
+        {{-- ANNOUNCEMENTS (Officer, Adviser and Student; same roles as the shared routes) --}}
+        @if(auth()->user()->hasRole('Officer', 'Adviser', 'Student'))
+            <div class="section-title">Announcements</div>
+            <a href="{{ route('announcements.index') }}">Announcements</a>
+        @endif
     </div>
 </div>

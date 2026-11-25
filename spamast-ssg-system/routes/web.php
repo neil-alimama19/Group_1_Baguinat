@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnnouncementController;
 use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\RegisterController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\ReportController;
 use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\Admin\InstituteController;
 use App\Http\Controllers\Admin\ProgramController;
+use App\Http\Controllers\Officer\AnnouncementController as OfficerAnnouncementController;
 use App\Http\Controllers\Officer\StudentController;
 use App\Http\Controllers\Officer\EventController as OfficerEventController;
 use App\Http\Controllers\Officer\EventSessionController;
@@ -51,6 +53,10 @@ Route::middleware('auth')->group(function () {
     Route::middleware('role:Officer,Adviser,Student')->group(function () {
         Route::get('events', [EventController::class, 'index'])->name('events.index');
         Route::get('events/{event}', [EventController::class, 'show'])->name('events.show');
+
+        // Shared Announcement Routes (Officer, Adviser, Student can read)
+        Route::get('announcements', [AnnouncementController::class, 'index'])->name('announcements.index');
+        Route::get('announcements/{announcement}', [AnnouncementController::class, 'show'])->name('announcements.show');
         
         // Shared Attendance, Penalties & Reports (Officer & Adviser)
         Route::middleware('role:Officer,Adviser')->group(function () {
@@ -79,6 +85,9 @@ Route::middleware(['auth', 'role:Officer'])->prefix('officer')->name('officer.')
     
     Route::resource('students', StudentController::class)->except(['show']);
     Route::resource('events', OfficerEventController::class)->except(['index', 'show']);
+
+    // Officer Announcements: only create, store, edit, update, destroy (list and show are shared above)
+    Route::resource('announcements', OfficerAnnouncementController::class)->except(['index', 'show']);
 
     Route::patch('sessions/{session}/toggle', [EventSessionController::class, 'toggle'])->name('sessions.toggle');
 

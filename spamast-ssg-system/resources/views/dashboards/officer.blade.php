@@ -28,4 +28,6 @@
         <h2>Welcome, Officer!</h2>
         <p>You can manage events, track attendance, and monitor student participation here.</p>
     </div>
+
+    @include('partials.latest-announcements')
 @endsection

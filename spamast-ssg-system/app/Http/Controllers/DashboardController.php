@@ -43,7 +43,9 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('dashboards.officer', compact('stats'));
+        $announcements = $this->latestAnnouncements();
+
+        return view('dashboards.officer', compact('stats', 'announcements'));
     }
 
     public function adviser()
@@ -56,7 +58,9 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('dashboards.adviser', compact('stats'));
+        $announcements = $this->latestAnnouncements();
+
+        return view('dashboards.adviser', compact('stats', 'announcements'));
     }
 
     public function student(Request $request)
@@ -73,12 +77,20 @@ class DashboardController extends Controller
             ];
         });
 
-        return view('dashboards.student', compact('stats'));
+        $announcements = $this->latestAnnouncements();
+
+        return view('dashboards.student', compact('stats', 'announcements'));
     }
 
     // Events dated today or later (today() is midnight, so today's events still count)
     private function upcomingEvents(): int
     {
         return Event::whereDate('event_date', '>=', today())->count();
+    }
+
+    // The 3 newest announcements. Not cached, so a new post shows immediately.
+    private function latestAnnouncements()
+    {
+        return Announcement::latest()->take(3)->get();
     }
 }

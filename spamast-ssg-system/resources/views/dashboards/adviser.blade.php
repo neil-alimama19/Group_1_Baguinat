@@ -24,4 +24,6 @@
         <h2>Welcome, Adviser!</h2>
         <p>Review event proposals, monitor officer activities, and oversee the SSG operations.</p>
     </div>
+
+    @include('partials.latest-announcements')
 @endsection
