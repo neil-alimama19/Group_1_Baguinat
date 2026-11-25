@@ -50,18 +50,42 @@ class ReportController extends Controller
             ->where('event_id', $event->id)
             ->get();
 
-        // Calculate Grand Totals from the summary
-        $grandTotal = $attendanceSummary->sum('total');
+        // Attendance grand totals (renamed from $grandTotal so that name is free for fines)
+        $grandAttendance = $attendanceSummary->sum('total');
         $grandMale = $attendanceSummary->sum('male');
         $grandFemale = $attendanceSummary->sum('female');
 
+        // ---- FINE SUMMARY (Support Collection) ----
+
+        // Step 1: load this event's penalties with each student's program
+        $fineRows = $event->penalties()->with('student.program')->get();
+
+        $fineSummary = collect($fineRows)
+            // Step 2: put penalties into groups, one group per program code
+            ->groupBy(fn ($penalty) => $penalty->student->program->code)
+            // Step 3: turn each group into ONE summary row
+            ->map(fn ($group, $programCode) => [
+                'program'  => $programCode,                                   // the program code
+                'students' => $group->pluck('student_id')->unique()->count(), // how many different students
+                'total'    => round((float) $group->sum('amount'), 2),        // sum of all fines in the group
+            ])
+            // Step 4: put the biggest fine totals first
+            ->sortByDesc('total')
+            // Step 5: reset the keys to 0, 1, 2... (groupBy left program codes as keys)
+            ->values();
+
+        // Step 6: add up every program's total to get the grand total of fines
+        $grandTotal = $fineSummary->sum('total');
+
         return view('reports.show', compact(
-            'event', 
-            'attendanceSummary', 
+            'event',
+            'attendanceSummary',
             'penalties',
-            'grandTotal',
+            'grandAttendance',
             'grandMale',
-            'grandFemale'
+            'grandFemale',
+            'fineSummary',
+            'grandTotal'
         ));
     }
 }
