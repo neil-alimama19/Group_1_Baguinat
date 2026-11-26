@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,65 +6,94 @@
     <title>SPAMAST SSG | Event Management System</title>
 
     <style>
+        /* Same design as the dashboards and login page:
+           dark purple gradient, purple accents, glass cards, Segoe UI font */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
 
+        html {
+            scroll-behavior: smooth; /* smooth jump for the #home / #features links */
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            background: #f5f8ff;
-            color: #172554;
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: linear-gradient(135deg, #2e1065, #1e1b4b);
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: white;
             line-height: 1.6;
         }
 
+        /* ---------- Header ---------- */
         header {
-            background: #ffffff;
+            background: rgba(0, 0, 0, 0.2);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
             padding: 18px 8%;
             display: flex;
             justify-content: space-between;
             align-items: center;
             gap: 20px;
-            box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
         }
 
         .logo {
             font-size: 20px;
             font-weight: bold;
-            color: #1d4ed8;
+            color: #c084fc;
         }
 
         .logo span {
             display: block;
             font-size: 11px;
-            color: #64748b;
+            color: #94a3b8;
             letter-spacing: 2px;
         }
 
         nav {
             display: flex;
-            gap: 12px;
+            gap: 16px;
             align-items: center;
         }
 
         nav a {
             text-decoration: none;
-            color: #1e293b;
-            font-weight: bold;
+            color: #d8b4fe;
+            font-weight: 600;
             font-size: 14px;
+            transition: color 0.2s;
         }
 
-        .nav-button {
-            background: #1d4ed8;
+        nav a:hover {
+            color: white;
+        }
+
+        nav .nav-button {
+            background: #7c3aed;
             color: white;
             padding: 10px 17px;
             border-radius: 8px;
+            transition: background 0.2s;
         }
 
+        nav .nav-button:hover {
+            background: #6d28d9;
+        }
+
+        /* ---------- Flash message (e.g. after logout) ---------- */
+        .flash {
+            margin: 20px 8% 0;
+            padding: 14px 18px;
+            border-radius: 10px;
+            font-weight: bold;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        /* ---------- Hero ---------- */
         .hero {
             padding: 90px 8%;
-            background: linear-gradient(135deg, #eff6ff, #dbeafe);
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -78,8 +106,9 @@
 
         .tag {
             display: inline-block;
-            background: #dbeafe;
-            color: #1d4ed8;
+            background: rgba(192, 132, 252, 0.15);
+            border: 1px solid rgba(192, 132, 252, 0.4);
+            color: #d8b4fe;
             padding: 7px 14px;
             border-radius: 30px;
             font-size: 13px;
@@ -94,11 +123,11 @@
         }
 
         h1 span {
-            color: #2563eb;
+            color: #c084fc;
         }
 
         .hero p {
-            color: #475569;
+            color: #cbd5e1;
             font-size: 17px;
             max-width: 560px;
             margin-bottom: 28px;
@@ -116,27 +145,43 @@
             border-radius: 8px;
             text-decoration: none;
             font-weight: bold;
+            transition: background 0.2s, transform 0.2s;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
         }
 
         .primary {
-            background: #1d4ed8;
+            background: #7c3aed;
             color: white;
         }
 
-        .secondary {
-            background: white;
-            color: #1d4ed8;
-            border: 1px solid #bfdbfe;
+        .primary:hover {
+            background: #6d28d9;
         }
 
+        .secondary {
+            background: rgba(255, 255, 255, 0.08);
+            color: #d8b4fe;
+            border: 1px solid rgba(255, 255, 255, 0.25);
+        }
+
+        .secondary:hover {
+            background: rgba(255, 255, 255, 0.16);
+            color: white;
+        }
+
+        /* Glass card, same look as the dashboard cards */
         .hero-card {
-            background: white;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             padding: 30px;
             border-radius: 20px;
             min-width: 260px;
             max-width: 310px;
             width: 100%;
-            box-shadow: 0 15px 40px rgba(30, 64, 175, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .hero-card .symbol {
@@ -147,6 +192,7 @@
         .hero-card h2 {
             font-size: 23px;
             margin-bottom: 10px;
+            color: #e9d5ff;
         }
 
         .hero-card p {
@@ -154,13 +200,14 @@
             margin-bottom: 0;
         }
 
+        /* ---------- Features ---------- */
         .features {
             padding: 75px 8%;
             text-align: center;
         }
 
         .section-label {
-            color: #2563eb;
+            color: #c084fc;
             text-transform: uppercase;
             font-size: 12px;
             font-weight: bold;
@@ -173,7 +220,7 @@
         }
 
         .section-description {
-            color: #64748b;
+            color: #94a3b8;
             margin-bottom: 35px;
         }
 
@@ -185,16 +232,17 @@
         }
 
         .feature {
-            background: white;
+            background: rgba(255, 255, 255, 0.05);
             padding: 25px;
             border-radius: 14px;
-            border: 1px solid #e2e8f0;
-            transition: transform 0.2s, box-shadow 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.2s, background 0.2s, border-color 0.2s;
         }
 
         .feature:hover {
             transform: translateY(-5px);
-            box-shadow: 0 12px 25px rgba(30, 64, 175, 0.09);
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(192, 132, 252, 0.5);
         }
 
         .feature-icon {
@@ -205,20 +253,23 @@
         .feature h3 {
             font-size: 18px;
             margin-bottom: 8px;
+            color: #e9d5ff;
         }
 
         .feature p {
-            color: #64748b;
+            color: #94a3b8;
             font-size: 14px;
         }
 
+        /* ---------- Call to action ---------- */
         .cta {
             margin: 0 8% 70px;
             padding: 45px 25px;
-            background: #1e40af;
+            background: linear-gradient(135deg, #7c3aed, #5b21b6);
             color: white;
             border-radius: 18px;
             text-align: center;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
 
         .cta h2 {
@@ -227,19 +278,33 @@
         }
 
         .cta p {
-            color: #dbeafe;
+            color: #ede9fe;
             margin-bottom: 22px;
         }
 
+        /* On the purple banner the secondary button turns white so it stands out */
+        .cta .secondary {
+            background: white;
+            color: #6d28d9;
+            border: none;
+        }
+
+        .cta .secondary:hover {
+            background: #ede9fe;
+            color: #5b21b6;
+        }
+
+        /* ---------- Footer ---------- */
         footer {
             padding: 25px 8%;
-            background: #ffffff;
-            color: #64748b;
+            background: rgba(0, 0, 0, 0.2);
+            color: #94a3b8;
             text-align: center;
-            border-top: 1px solid #e2e8f0;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 13px;
         }
 
+        /* ---------- Responsive ---------- */
         @media (max-width: 900px) {
             .hero {
                 flex-direction: column;
@@ -264,6 +329,10 @@
 
             nav {
                 flex-wrap: wrap;
+            }
+
+            .flash {
+                margin: 16px 5% 0;
             }
 
             .hero {
@@ -310,7 +379,13 @@
                 <a href="{{ route('main') }}" class="nav-button">Dashboard</a>
                 <a href="{{ route('profile.edit') }}">My Profile</a>
             @endauth
+        </nav>
     </header>
+
+    {{-- Shows messages such as "You have been logged out." --}}
+    @if (session('success'))
+        <div class="flash">{{ session('success') }}</div>
+    @endif
 
     <main>
         <section class="hero" id="home">

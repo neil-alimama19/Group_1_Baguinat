@@ -22,11 +22,13 @@ class LoginController extends Controller
 
         if (Auth::attempt([
             'email' => $credentials['email'],
-            'password' => $credentials['password']
+            'password' => $credentials['password'],
         ], $request->boolean('remember'))) {
-            
-            // Check if user is active
-            if (!Auth::user()->is_active) {
+
+            $user = $request->user();
+
+            // Inactive accounts are logged out right away
+            if (! $user->is_active) {
                 Auth::logout();
                 return back()->withErrors([
                     'email' => 'Your account is inactive or awaiting Admin approval',
@@ -34,7 +36,10 @@ class LoginController extends Controller
             }
 
             $request->session()->regenerate();
-            return redirect()->route($request->user()->dashboardRoute())->with('success', 'Welcome back!');
+
+            // intended(): go to the page the user first asked for, otherwise to the role dashboard
+            return redirect()->intended(route($user->dashboardRoute()))
+                ->with('success', 'Welcome back!');
         }
 
         return back()->withErrors([
