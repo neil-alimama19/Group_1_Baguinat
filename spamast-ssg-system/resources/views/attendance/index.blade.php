@@ -153,8 +153,13 @@
         </div>
 
         <script>
+            // CHANGED: the address comes from the named route officer.attendance.update (PUT /officer/attendance/{attendance}).
+            // ':id' is a placeholder, and 'false' keeps the URL relative (no domain).
+            const attendanceUrlTemplate = @js(route('officer.attendance.update', ':id', false));
+
             function openEditModal(id, checkIn, checkOut) {
-                document.getElementById('editForm').action = `/officer/attendance/${id}`;
+                // Swap the placeholder for the real attendance id
+                document.getElementById('editForm').action = attendanceUrlTemplate.replace(':id', id);
                 document.getElementById('edit_check_in').value = checkIn;
                 document.getElementById('edit_check_out').value = checkOut;
                 document.getElementById('editModal').style.display = 'flex';

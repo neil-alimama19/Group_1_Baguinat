@@ -76,7 +76,8 @@ class PenaltyController extends Controller
 
         $this->forgetDashboardCache(); // clear outdated dashboard numbers
 
-        return back()->with('success', 'Penalty updated successfully.');
+        // Go to this event's fines page (the feature's index) with a success message
+        return redirect()->route('penalties.index', $penalty->event_id)->with('success', 'Penalty updated successfully.');
     }
 
     public function destroy(Penalty $penalty)
@@ -85,7 +86,8 @@ class PenaltyController extends Controller
 
         $this->forgetDashboardCache(); // clear outdated dashboard numbers
 
-        return back()->with('success', 'Penalty deleted successfully.');
+        // The model still holds event_id after delete(), so we can build the route
+        return redirect()->route('penalties.index', $penalty->event_id)->with('success', 'Penalty deleted successfully.');
     }
 
     // Fines changed: the Officer and Adviser dashboards show unpaid fines

@@ -195,7 +195,8 @@
             <button type="submit">Save Changes</button>
         </form>
 
-        <a href="/" class="back">&larr; Back to Home</a>
+                {{-- "main" sends the logged-in user to their own role dashboard --}}
+        <a href="{{ route('main') }}" class="back">&larr; Back to Dashboard</a>
     </div>
 </body>
 </html>

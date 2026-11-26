@@ -46,7 +46,8 @@ Route::middleware('auth')->group(function () {
         \Illuminate\Support\Facades\Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        return redirect('/')->with('success', 'You have been logged out.');
+        // CHANGED: use the named route instead of the hardcoded '/'
+        return redirect()->route('landing')->with('success', 'You have been logged out.');
     })->name('logout');
 
     // Shared Event Routes (Officer, Adviser, Student)

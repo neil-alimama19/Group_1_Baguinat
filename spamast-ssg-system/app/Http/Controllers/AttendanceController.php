@@ -103,7 +103,8 @@ class AttendanceController extends Controller
                             ->exists();
 
         if ($exists) {
-            return back()->with('error', 'An attendance record already exists for this student and session.');
+            return redirect()->route('attendance.index', $event)
+                ->with('error', 'An attendance record already exists for this student and session.');
         }
 
         Attendance::create($validated);
@@ -113,7 +114,8 @@ class AttendanceController extends Controller
         $userId = Student::whereKey($validated['student_id'])->value('user_id');
         Cache::forget("student.stats.{$userId}");
 
-        return back()->with('success', 'Attendance record added successfully.');
+        // Back to this event's attendance list (the feature's index)
+        return redirect()->route('attendance.index', $event)->with('success', 'Attendance record added successfully.');
     }
 
     /**
@@ -130,7 +132,9 @@ class AttendanceController extends Controller
 
         $attendance->update($validated);
 
-        return back()->with('success', 'Attendance record updated successfully.');
+        // The record's session knows which event it belongs to
+        return redirect()->route('attendance.index', $attendance->session->event_id)
+            ->with('success', 'Attendance record updated successfully.');
     }
 
     /**
@@ -140,13 +144,14 @@ class AttendanceController extends Controller
     {
         Gate::authorize('manage-ssg');
 
-        $userId = $attendance->student->user_id; // save it before deleting
+        $userId = $attendance->student->user_id;     // save it before deleting
+        $eventId = $attendance->session->event_id;   // save it before deleting
 
         $attendance->delete();
 
         Cache::forget('adviser.stats');
         Cache::forget("student.stats.{$userId}");
 
-        return back()->with('success', 'Attendance record deleted successfully.');
+        return redirect()->route('attendance.index', $eventId)->with('success', 'Attendance record deleted successfully.');
     }
 }

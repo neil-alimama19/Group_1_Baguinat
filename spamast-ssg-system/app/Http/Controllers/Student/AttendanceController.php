@@ -33,7 +33,8 @@ class AttendanceController extends Controller
 
         // If the record already existed and had a check_in_at, show a specific message
         if (!$attendance->wasRecentlyCreated && $attendance->check_in_at) {
-            return back()->with('error', 'You have already checked in for this session.');
+            return redirect()->route('events.show', $session->event_id)
+                ->with('error', 'You have already checked in for this session.');
         }
 
         // If it was just created (or somehow existed without a time), ensure the time is set
@@ -42,7 +43,8 @@ class AttendanceController extends Controller
         Cache::forget('adviser.stats');                         // a new attendance row exists
         Cache::forget("student.stats.{$request->user()->id}");  // this student's own count
 
-        return back()->with('success', 'Check-in successful!');
+        // Same event page, with a status message
+        return redirect()->route('events.show', $session->event_id)->with('success', 'Check-in successful!');
     }
 
     public function checkOut(Request $request, EventSession $session)
@@ -60,6 +62,6 @@ class AttendanceController extends Controller
 
         $attendance->update(['check_out_at' => now()]);
 
-        return back()->with('success', 'Check-out successful!');
+        return redirect()->route('events.show', $session->event_id)->with('success', 'Check-out successful!');
     }
 }
