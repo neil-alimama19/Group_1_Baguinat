@@ -1,0 +1,74 @@
+
+  GET|HEAD        / ............................................................................................................ landing › routes/web.php:25
+  GET|HEAD        admin/dashboard .............................................................................. admin.dashboard › DashboardController@admin
+  GET|HEAD        admin/institutes ................................................................ admin.institutes.index › Admin\InstituteController@index
+  POST            admin/institutes ................................................................ admin.institutes.store › Admin\InstituteController@store
+  GET|HEAD        admin/institutes/create ....................................................... admin.institutes.create › Admin\InstituteController@create
+  PUT|PATCH       admin/institutes/{institute} .................................................. admin.institutes.update › Admin\InstituteController@update
+  DELETE          admin/institutes/{institute} ................................................ admin.institutes.destroy › Admin\InstituteController@destroy
+  GET|HEAD        admin/institutes/{institute}/edit ................................................. admin.institutes.edit › Admin\InstituteController@edit
+  GET|HEAD        admin/programs ...................................................................... admin.programs.index › Admin\ProgramController@index
+  POST            admin/programs ...................................................................... admin.programs.store › Admin\ProgramController@store
+  GET|HEAD        admin/programs/create ............................................................. admin.programs.create › Admin\ProgramController@create
+  PUT|PATCH       admin/programs/{program} .......................................................... admin.programs.update › Admin\ProgramController@update
+  DELETE          admin/programs/{program} ........................................................ admin.programs.destroy › Admin\ProgramController@destroy
+  GET|HEAD        admin/programs/{program}/edit ......................................................... admin.programs.edit › Admin\ProgramController@edit
+  GET|HEAD        admin/users ............................................................................... admin.users.index › Admin\UserController@index
+  POST            admin/users ............................................................................... admin.users.store › Admin\UserController@store
+  GET|HEAD        admin/users/create ...................................................................... admin.users.create › Admin\UserController@create
+  PUT|PATCH       admin/users/{user} ...................................................................... admin.users.update › Admin\UserController@update
+  DELETE          admin/users/{user} .................................................................... admin.users.destroy › Admin\UserController@destroy
+  GET|HEAD        admin/users/{user}/edit ..................................................................... admin.users.edit › Admin\UserController@edit
+  PATCH           admin/users/{user}/toggle ............................................................... admin.users.toggle › Admin\UserController@toggle
+  GET|HEAD        adviser/dashboard ........................................................................ adviser.dashboard › DashboardController@adviser
+  GET|HEAD        announcements ......................................................................... announcements.index › AnnouncementController@index
+  GET|HEAD        announcements/{announcement} ............................................................ announcements.show › AnnouncementController@show
+  GET|HEAD        events .............................................................................................. events.index › EventController@index
+  GET|HEAD        events/{event} ........................................................................................ events.show › EventController@show
+  GET|HEAD        events/{event}/attendance .................................................................. attendance.index › AttendanceController@index
+  GET|HEAD        events/{event}/penalties ....................................................................... penalties.index › PenaltyController@index
+  GET|HEAD        login ...................................................................................................... login › LoginController@index
+  POST            login .............................................................................................................. LoginController@store
+  POST            logout ........................................................................................................ logout › routes/web.php:45
+  GET|HEAD        main .......................................................................................................... main › MainController@view
+  POST            officer/announcements ................................................. officer.announcements.store › Officer\AnnouncementController@store
+  GET|HEAD        officer/announcements/create ........................................ officer.announcements.create › Officer\AnnouncementController@create
+  PUT|PATCH       officer/announcements/{announcement} ................................ officer.announcements.update › Officer\AnnouncementController@update
+  DELETE          officer/announcements/{announcement} .............................. officer.announcements.destroy › Officer\AnnouncementController@destroy
+  GET|HEAD        officer/announcements/{announcement}/edit ............................... officer.announcements.edit › Officer\AnnouncementController@edit
+  PUT             officer/attendance/{attendance} .................................................. officer.attendance.update › AttendanceController@update
+  DELETE          officer/attendance/{attendance} ................................................ officer.attendance.destroy › AttendanceController@destroy
+  GET|HEAD        officer/dashboard ........................................................................ officer.dashboard › DashboardController@officer
+  POST            officer/events ...................................................................... officer.events.store › Officer\EventController@store
+  GET|HEAD        officer/events/create ............................................................. officer.events.create › Officer\EventController@create
+  PUT|PATCH       officer/events/{event} ............................................................ officer.events.update › Officer\EventController@update
+  DELETE          officer/events/{event} .......................................................... officer.events.destroy › Officer\EventController@destroy
+  POST            officer/events/{event}/attendance .................................................. officer.attendance.store › AttendanceController@store
+  GET|HEAD        officer/events/{event}/edit ........................................................... officer.events.edit › Officer\EventController@edit
+  POST            officer/events/{event}/penalties/generate ................................ officer.penalties.generate › Officer\PenaltyController@generate
+  PUT             officer/penalties/{penalty} .................................................. officer.penalties.update › Officer\PenaltyController@update
+  DELETE          officer/penalties/{penalty} ................................................ officer.penalties.destroy › Officer\PenaltyController@destroy
+  PATCH           officer/sessions/{session}/toggle ........................................ officer.sessions.toggle › Officer\EventSessionController@toggle
+  GET|HEAD        officer/students ................................................................ officer.students.index › Officer\StudentController@index
+  POST            officer/students ................................................................ officer.students.store › Officer\StudentController@store
+  GET|HEAD        officer/students/create ....................................................... officer.students.create › Officer\StudentController@create
+  PUT|PATCH       officer/students/{student} .................................................... officer.students.update › Officer\StudentController@update
+  DELETE          officer/students/{student} .................................................. officer.students.destroy › Officer\StudentController@destroy
+  GET|HEAD        officer/students/{student}/edit ................................................... officer.students.edit › Officer\StudentController@edit
+  GET|HEAD        profile ............................................................................................ profile.edit › ProfileController@edit
+  PUT             profile ........................................................................................ profile.update › ProfileController@update
+  GET|HEAD        register ............................................................................................. register › RegisterController@index
+  POST            register ........................................................................................................ RegisterController@store
+  GET|HEAD        reports ........................................................................................... reports.index › ReportController@index
+  GET|HEAD        reports/{event} ..................................................................................... reports.show › ReportController@show
+  GET|HEAD        sanctions ..................................................................................... sanctions.index › SanctionController@index
+  POST            sanctions ..................................................................................... sanctions.store › SanctionController@store
+  GET|HEAD        sanctions/create ............................................................................ sanctions.create › SanctionController@create
+  PUT|PATCH       sanctions/{sanction} ........................................................................ sanctions.update › SanctionController@update
+  GET|HEAD        sanctions/{sanction}/edit ....................................................................... sanctions.edit › SanctionController@edit
+  GET|HEAD        student/dashboard ........................................................................ student.dashboard › DashboardController@student
+  POST            student/sessions/{session}/check-in ................................... student.attendance.check-in › Student\AttendanceController@checkIn
+  POST            student/sessions/{session}/check-out ................................ student.attendance.check-out › Student\AttendanceController@checkOut
+
+                                                                                                                                         Showing [70] routes
+

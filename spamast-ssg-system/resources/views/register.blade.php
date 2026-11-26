@@ -123,7 +123,7 @@
         </form>
 
         <p class="switch">Already have an account? <a href="{{ route('login') }}">Login here</a></p>
-        <a class="back" href="{{ url('/') }}">&larr; Back to home</a>
+        <a class="back" href="{{ route('landing') }}">&larr; Back to home</a>
     </div>
 </body>
 </html>

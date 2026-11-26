@@ -143,7 +143,8 @@
             <div class="error">{{ $errors->first() }}</div>
         @endif
 
-        <form method="POST" action="{{ url('/login') }}">
+        {{-- route('login') gives /login; the POST route uses the same URL --}}
+        <form method="POST" action="{{ route('login') }}">
             @csrf
             <label for="email">Email</label>
             <input type="email" id="email" name="email" value="{{ old('email') }}" placeholder="you@example.com" required>
@@ -159,8 +160,9 @@
             <button type="submit">Login</button>
         </form>
 
+        {{-- No "Forgot Password" link: the project has no route for it --}}
         <p class="switch">No account yet? <a href="{{ route('register') }}">Register here</a></p>
-        <a class="back" href="{{ url('/') }}">&larr; Back to home</a>
+        <a class="back" href="{{ route('landing') }}">&larr; Back to home</a>
     </div>
 </body>
 </html>

@@ -300,9 +300,16 @@
         <nav>
             <a href="#home">Home</a>
             <a href="#features">Features</a>
-            <a href="{{ route('login') }}" class="nav-button">Login</a>
-            <a href="{{ route('profile.edit') }}">My Profile</a>
-        </nav>
+            @guest
+                {{-- Not logged in: show Login and Register --}}
+                <a href="{{ route('login') }}" class="nav-button">Login</a>
+                <a href="{{ route('register') }}">Register</a>
+            @endguest
+            @auth
+                {{-- Logged in: "main" sends the user to their own role dashboard --}}
+                <a href="{{ route('main') }}" class="nav-button">Dashboard</a>
+                <a href="{{ route('profile.edit') }}">My Profile</a>
+            @endauth
     </header>
 
     <main>
@@ -324,9 +331,16 @@
                 </p>
 
                 <div class="buttons">
-                    <a href="{{ route('register') }}" class="button primary">
-                        Get Started →
-                    </a>
+                    @guest
+                        <a href="{{ route('register') }}" class="button primary">
+                            Get Started →
+                        </a>
+                    @endguest
+                    @auth
+                        <a href="{{ route('main') }}" class="button primary">
+                            Go to Dashboard →
+                        </a>
+                    @endauth
 
                     <a href="#features" class="button secondary">
                         Explore Features
@@ -396,9 +410,16 @@
                 Stay organized, stay informed, and stay involved.
             </p>
 
-            <a href="{{ route('register') }}" class="button secondary">
-                Register Now
-            </a>
+            @guest
+                <a href="{{ route('register') }}" class="button secondary">
+                    Register Now
+                </a>
+            @endguest
+            @auth
+                <a href="{{ route('main') }}" class="button secondary">
+                    Go to Dashboard
+                </a>
+            @endauth
         </section>
     </main>
 

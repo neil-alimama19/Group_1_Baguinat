@@ -5,7 +5,10 @@
     </div>
 
     <div class="sidebar-nav">
-        <a href="/">Home</a>
+        <a href="{{ route('landing') }}">Home</a>
+
+        {{-- Dashboard: dashboardRoute() returns admin.dashboard, officer.dashboard, adviser.dashboard or student.dashboard --}}
+        <a href="{{ route(auth()->user()->dashboardRoute()) }}">Dashboard</a>
         
         {{-- ADMIN MENU --}}
         @if(auth()->user()->hasRole('Admin'))
@@ -25,7 +28,10 @@
         {{-- REPORTS & VIEWING (Officer & Adviser) --}}
         @can('view-reports')
             <div class="section-title">Reports & Records</div>
-            <a href="{{ route('events.index') }}">Events</a>
+            {{-- Officers already have Manage Events above, so only Advisers need this Events link --}}
+            @cannot('manage-ssg')
+                <a href="{{ route('events.index') }}">Events</a>
+            @endcannot
             <a href="{{ route('reports.index') }}">Event Reports</a>
         @endcan
 
