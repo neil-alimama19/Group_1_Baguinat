@@ -6,9 +6,11 @@
     <title>Register - SPAMAST SSG</title>
     <style>
         * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        /* Same dark purple background as the login page */
         body {
             font-family: 'Segoe UI', Arial, sans-serif;
-            background: linear-gradient(135deg, #e8f1ff, #dbe9ff);
+            background: linear-gradient(135deg, #2e1065, #1e1b4b); /* Deep purple to dark indigo */
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -16,16 +18,18 @@
             padding: 20px;
             color: #1e293b;
         }
+
         .card {
-            background: #fff;
+            background: #ffffff;
             width: 100%;
             max-width: 420px;
             padding: 40px 36px;
             border-radius: 20px;
-            box-shadow: 0 20px 50px rgba(30, 64, 175, 0.12);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); /* purple-theme shadow */
         }
+
         .brand { text-align: center; margin-bottom: 28px; }
-        .brand h2 { color: #1d4ed8; font-size: 26px; }
+        .brand h2 { color: #6d28d9; font-size: 26px; } /* purple brand title */
         .brand span {
             display: block;
             font-size: 11px;
@@ -33,9 +37,12 @@
             color: #64748b;
             margin-top: 4px;
         }
-        h1 { font-size: 22px; color: #1e2a5e; margin-bottom: 6px; }
+
+        h1 { font-size: 22px; color: #1e1b4b; margin-bottom: 6px; }
         .sub { color: #64748b; font-size: 14px; margin-bottom: 24px; }
-        label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; }
+
+        label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 6px; color: #1e1b4b; }
+
         input {
             width: 100%;
             padding: 12px 14px;
@@ -44,20 +51,29 @@
             font-size: 15px;
             margin-bottom: 18px;
             outline: none;
+            transition: all 0.2s ease-in-out;
         }
-        input:focus { border-color: #1d4ed8; box-shadow: 0 0 0 3px rgba(29, 78, 216, 0.15); }
+        /* Purple focus ring, same as login */
+        input:focus {
+            border-color: #8b5cf6;
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.25);
+        }
+
+        /* Vibrant purple button, same as login */
         button {
             width: 100%;
             padding: 13px;
-            background: #1d4ed8;
+            background: #7c3aed;
             color: #fff;
             border: none;
             border-radius: 10px;
             font-size: 16px;
             font-weight: 600;
             cursor: pointer;
+            transition: background 0.2s ease;
         }
-        button:hover { background: #1e40af; }
+        button:hover { background: #6d28d9; } /* darker purple on hover */
+
         .error {
             background: #fee2e2;
             color: #b91c1c;
@@ -67,9 +83,13 @@
             margin-bottom: 18px;
         }
         .error ul { margin-left: 18px; }
+
         .switch { text-align: center; margin-top: 20px; font-size: 14px; color: #64748b; }
-        .switch a { color: #1d4ed8; font-weight: 600; text-decoration: none; }
-        .back { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: #64748b; text-decoration: none; }
+        .switch a { color: #7c3aed; font-weight: 600; text-decoration: none; transition: color 0.2s; }
+        .switch a:hover { color: #6d28d9; }
+
+        .back { display: block; text-align: center; margin-top: 14px; font-size: 13px; color: #64748b; text-decoration: none; transition: color 0.2s; }
+        .back:hover { color: #1e1b4b; }
     </style>
 </head>
 <body>

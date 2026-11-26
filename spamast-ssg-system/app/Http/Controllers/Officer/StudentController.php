@@ -23,12 +23,17 @@ class StudentController extends Controller
         // Search by name or student_no
         if ($request->filled('search')) {
             $search = $request->input('search');
-            $query->where('student_no', 'like', "%{$search}%")
-                  ->orWhereHas('user', function ($q) use ($search) {
-                      $q->where('first_name', 'like', "%{$search}%")
-                        ->orWhere('last_name', 'like', "%{$search}%")
-                        ->orWhere('name', 'like', "%{$search}%");
-                  });
+
+            // The extra where(function ...) wraps the OR conditions in parentheses, so the
+            // institute and program filters below apply to ALL search results.
+            $query->where(function ($searchQuery) use ($search) {
+                $searchQuery->where('student_no', 'like', "%{$search}%")
+                    ->orWhereHas('user', function ($q) use ($search) {
+                        $q->where('first_name', 'like', "%{$search}%")
+                          ->orWhere('last_name', 'like', "%{$search}%")
+                          ->orWhere('name', 'like', "%{$search}%");
+                    });
+            });
         }
 
         // Filter by institute

@@ -128,29 +128,56 @@ class DemoDataSeeder extends Seeder
             ]
         );
 
-        // 5. Create sample Students spread across all programs.
-        //    Change this number to make more or fewer students. Emails and student numbers are always
-        //    unique; only 100 name combinations exist, so a few full names repeat after 90 students.
-        $studentCount = 60;
+                // 5. Create sample Students so EVERY program has students.
+        //    3 students per program, so the total grows automatically when you add programs.
+        $programs = Program::orderBy('id')->get(); // every program in the database
+        $programCount = $programs->count();
+        $studentsPerProgram = 3;
+        $studentCount = $programCount * $studentsPerProgram;
 
         $firstNames = ['Juan', 'Maria', 'Jose', 'Ana', 'Pedro', 'Rosa', 'Luis', 'Carmen', 'Jorge', 'Elena'];
         $lastNames = ['Dela Cruz', 'Santos', 'Reyes', 'Bautista', 'Ocampo', 'Garcia', 'Mendoza', 'Torres', 'Flores', 'Villanueva'];
-        $programs = Program::orderBy('id')->get(); // every program, so each institute has students
 
         for ($i = 1; $i <= $studentCount; $i++) {
-            // Cycle through names and programs.
-            // After the first 20 students the last name shifts, so full names do not repeat.
+            // Cycle through names. After the first 20 students the last name shifts,
+            // so full names do not repeat.
             $shift = max(0, intdiv($i - 1, 10) - 1);
             $firstName = $firstNames[($i - 1) % 10];
             $lastName = $lastNames[(($i - 1) % 10 + $shift) % 10];
-            $sex = ($i % 2 === 0) ? 'Female' : 'Male';
-            $program = $programs[($i - 1) % $programs->count()];
+
+            // Round-robin: student 1 -> program 1, student 2 -> program 2, ... then start again
+            $program = $programs[($i - 1) % $programCount];
+
+            // Adding the round number flips the sex each time a program is visited again,
+            // so every program gets both Male and Female students
+            $round = intdiv($i - 1, $programCount);
+            $sex = (($i - 1 + $round) % 2 === 0) ? 'Male' : 'Female';
 
             // Format student number like 2024-0001
             $studentNo = '2024-' . str_pad($i, 4, '0', STR_PAD_LEFT);
             $email = strtolower($firstName . '.' . $lastName . $i . '@spamast.edu.ph');
 
-            // Create the User
+            // The student number is unique, so check it FIRST.
+            // If an older run already created this student, keep them and only move them to the new program.
+            $existing = Student::where('student_no', $studentNo)->first();
+
+            if ($existing) {
+                $existing->update([
+                    'program_id' => $program->id,
+                    'sex' => $sex,
+                    'year_level' => (($i - 1) % 4) + 1, // 1 to 4, the same every run
+                ]);
+
+                // Remove a leftover user from the failed run (same email, no student profile)
+                User::where('email', $email)
+                    ->where('id', '!=', $existing->user_id)
+                    ->whereDoesntHave('student')
+                    ->delete();
+
+                continue; // go to the next student
+            }
+
+            // New student: create the User (no duplicate when the seeder runs twice)
             $user = User::firstOrCreate(
                 ['email' => $email],
                 [
@@ -165,20 +192,21 @@ class DemoDataSeeder extends Seeder
             );
 
             // Create the Student profile linked to the User
-            Student::firstOrCreate(
+            Student::updateOrCreate(
                 ['user_id' => $user->id],
                 [
                     'program_id' => $program->id,
                     'student_no' => $studentNo,
                     'sex' => $sex,
-                    'year_level' => rand(1, 4),
+                    'year_level' => (($i - 1) % 4) + 1,
                 ]
             );
         }
 
-        // The Admin dashboard counts institutes and programs, so clear its saved numbers
+        // The dashboards count these numbers, so clear their saved values
         Cache::forget('admin.stats');
         Cache::forget('officer.stats');
+        Cache::forget('adviser.stats');
     }
 
     /**

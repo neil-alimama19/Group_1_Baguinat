@@ -46,4 +46,16 @@ class LoginController extends Controller
             'email' => 'The provided credentials do not match our records.',
         ])->onlyInput('email');
     }
+
+    public function logout(Request $request)
+    {
+        Auth::logout();
+
+        // End the session and create a new CSRF token so the old ones cannot be reused
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        // Logout goes to the login page (guide table 3.8.1); login.blade.php shows the success message
+        return redirect()->route('login')->with('success', 'You have been logged out.');
+    }
 }

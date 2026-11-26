@@ -16,7 +16,26 @@ class EventController extends Controller
             $query->where('title', 'like', '%' . $request->input('search') . '%');
         }
 
-        $events = $query->orderByDesc('event_date')->paginate(10)->withQueryString();
+        // Upcoming / Past tabs. Anything that is not "past" is treated as "upcoming" (the default tab).
+        $isPast = $request->input('tab') === 'past';
+
+        if ($isPast) {
+            // Past: events dated before today
+            $query->whereDate('event_date', '<', today());
+        } else {
+            // Upcoming: events dated today or later (today() is midnight, so today's events stay here)
+            $query->whereDate('event_date', '>=', today());
+        }
+
+        // Date search: narrow the current tab to one exact date
+        if ($request->filled('date')) {
+            $query->whereDate('event_date', $request->input('date'));
+        }
+
+        // Upcoming: soonest first. Past: most recent first.
+        $events = $query->orderBy('event_date', $isPast ? 'desc' : 'asc')
+            ->paginate(10)
+            ->withQueryString(); // keeps tab, search and date when changing pages
 
         return view('events.index', compact('events'));
     }

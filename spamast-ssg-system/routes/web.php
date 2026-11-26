@@ -22,7 +22,8 @@ use App\Http\Controllers\Officer\PenaltyController as OfficerPenaltyController;
 use App\Http\Controllers\Student\AttendanceController as StudentAttendanceController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => view('landing-page'))->name('landing');
+// Route::view (not a closure) so php artisan route:cache / optimize works
+Route::view('/', 'landing-page')->name('landing');
 Route::get('/main', [MainController::class, 'view'])->middleware('auth')->name('main');
 
 // Guest Routes
@@ -42,13 +43,8 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 
-    Route::post('/logout', function (\Illuminate\Http\Request $request) {
-        \Illuminate\Support\Facades\Auth::logout();
-        $request->session()->invalidate();
-        $request->session()->regenerateToken();
-        // Logout goes to the login page (guide table 3.8.1); login.blade.php shows the success message
-        return redirect()->route('login')->with('success', 'You have been logged out.');
-    })->name('logout');
+    // Logout now lives in LoginController@logout (a closure cannot be cached by route:cache)
+    Route::post('/logout', [LoginController::class, 'logout'])->name('logout');
 
     // Shared Event Routes (Officer, Adviser, Student)
     Route::middleware('role:Officer,Adviser,Student')->group(function () {
